@@ -1,0 +1,96 @@
+1) Write tests for your smart contract and demonstrate
+the process of testing using Hardhat Development Environment. 
+      
+Ans) Smart contract:
+      // SPDX-License-Identifier: MIT
+
+// Solidity files have to start with this pragma.
+// It will be used by the solidity compiler to validate its version.
+pragma solidity ^0.8.24;
+
+
+
+//  The is the main biulding bolck for smart contracts.
+contract Token {
+    //  Some string typevariables to identify the token.
+    string public name = "My Hardhat Token";
+    string public symbol = "MHT";
+
+    //  The fixed amount of tokens, stored in an unsingned integer type varaible
+    uint256 public totalSupply = 1000000;
+
+    // An address type varaible is used to store ethereim accounts
+    address public owner;
+
+    // A mapping is a key/value map. Here we store each accounts balance.
+    mapping(address => uint256) balances;
+
+    // The transfer even helps off-chain application understand
+    // what happens within your contract.
+    event Transfer(address indexed _from, address indexed _to, uint _value);
+
+    /**
+    * Contract initialization.
+    */
+    constructor() {
+        // The totalsupply is assigned to the transaction sender, which is the
+        // account that is deploying the contract.
+        balances[msg.sender] = totalSupply;
+        owner = msg.sender;
+    }
+
+    /**
+    * A function to transfer tokens.
+    *
+    * The 'external' modifer makes a function *only* callable from *outside*
+    * the contract.
+     */
+    function transfer(address to, uint256 amount) external {
+
+        // Check if the transaction sender has enough tokens.
+        // If 'require' s first argument avaluates to 'false' then the
+        //  transaction will revert
+        require(balances[msg.sender] >= amount, "Not enough tokens");
+
+        // Transfer the amount
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
+
+        // Notify off-chain applications of the transfer
+        emit Transfer(msg.sender, to, amount);
+    }
+    /**
+    * Read only function to retriveve the token balance of a given account.
+    *
+    *
+    * The 'view' modifier indicates that it doen't modify the contract's
+    * state, which allows us to call it without executing a trasaction.
+    */
+    function balanceOf(address account) external view returns (uint256) {
+        return balances[account];
+    }
+}
+     * Create a new file called Token.js inside test directory of our project root directory called "hardhat-project_exam".
+     * Start writing the code in test directory called Token.js
+     * After writing the code run the command as 
+                           "npx hardhat test"
+
+
+
+2) Demonstrate the steps involved in the process of
+deploying your smart contract to a live network.
+
+Ans)Deploying a smart contract to a live network.
+* Once we are ready to share dApp(decentralized application) or smart contracts with other people, 
+  we need deploy our smart contract to live network. So others can access an instance that's not running locally on the system.
+* In Ethereum network "mainnet" deals with real money but there is a "testnet" that do not. 
+ ex: Goerli and Sepolia
+* At software level, deploying to a testnet is the same as deploying to mainnet.
+* The only difference is which network we connect to.
+*Now create a new file "deplo.js" inside the "scripts" directory of our project root directory.
+* To tell Hardhat to connect specific Ethereum network, we can use "--network" parameter when running any tasks.
+ Command to run:"npx hardhat run scripts/deploy.js --network <network-name>
+* In our current configuration we are not using "--network" parameter.
+* Finally run the command as
+ "npx hardhat run scripts/deploy.js"
+* Here we get the result look like as shown:
